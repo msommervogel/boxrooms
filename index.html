@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>BOXROOMS</title>
+<meta name="description" content="Survival coop en 3D dans le navigateur : jusqu'à 4 joueurs, le téléphone sert de manette.">
+<meta name="theme-color" content="#140F0C">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Barlow+Semi+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- HOST -->
+<div id="host" class="hidden">
+  <canvas id="gl" aria-label="Arène de jeu"></canvas>
+  <div id="fx"></div>
+  <div id="hud" class="hidden">
+    <div id="hudTop">
+      <div class="hudBlock"><div id="waveLabel">Vague 1</div><div id="waveSub"></div></div>
+      <div class="hudBlock"><div id="scoreLabel">0</div><div id="scoreSub">Score d'équipe</div></div>
+    </div>
+    <div id="combo"><div id="comboNum">×0</div><div id="comboTxt">combo</div><div id="comboBar"><div id="comboFill"></div></div></div>
+    <div id="cards"></div>
+  </div>
+  <div id="banner"><div class="t"></div><div class="s"></div></div>
+  <div id="brand"><h1>BOX<br>ROOMS</h1><p>Survivez à la horde, à plusieurs, sur le même écran.</p></div>
+  <div id="lobby">
+    <div id="joinCard">
+      <h2>Prenez une manette</h2>
+      <p class="lead">Scannez le QR code avec votre téléphone : il devient votre manette. Vous pouvez aussi ouvrir cette page sur le téléphone et taper le code.</p>
+      <div id="qrWrap">
+        <canvas id="qr" width="300" height="300" aria-label="QR code pour rejoindre"></canvas>
+        <div id="codeBox"><div class="k">Code de la partie</div><div class="v" id="codeVal">····</div><div id="netStatus">Connexion…</div></div>
+      </div>
+      <ul id="slots"></ul>
+      <button class="btn" id="startBtn" disabled>Lancer la partie</button>
+      <p id="hints"><b>Clavier et souris :</b> Entrée pour rejoindre, ZQSD ou WASD pour bouger, la souris pour viser et tirer, molette ou A/E pour changer d'arme (Q/E en QWERTY).<br><b>Manette :</b> appuyez sur A.</p>
+    </div>
+  </div>
+  <div id="over" class="hidden">
+    <div id="overCard">
+      <h2>La horde a gagné</h2>
+      <p class="sub" id="overSub"></p>
+      <div id="overStats"></div>
+      <ul id="overPlayers"></ul>
+      <div class="row2"><button class="btn" id="againBtn">Rejouer</button><button class="btn ghost" id="lobbyBtn">Retour au salon</button></div>
+    </div>
+  </div>
+  <button class="btn ghost" id="modeSwitchHost" style="color:#F4EBDD;border-color:rgba(244,235,221,.3)">Utiliser cet appareil comme manette</button>
+  <button id="muteBtn" aria-pressed="false">Son : activé</button>
+</div>
+
+<!-- PAD -->
+<div id="pad" class="hidden">
+  <div id="padJoin">
+    <h1>BOX<br>ROOMS</h1>
+    <p id="padStatus">Chargement…</p>
+    <div id="padSpinner" class="hidden"></div>
+    <input id="padName" maxlength="12" placeholder="Ton pseudo" autocomplete="off" aria-label="Pseudo">
+    <div id="padCodeRow"><input id="padCode" maxlength="4" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Code de la partie"><button class="btn" id="padJoinBtn">Rejoindre</button></div>
+    <button class="btn ghost" id="modeSwitchPad" style="color:#D9CDBB;border-color:#3B4C54">Utiliser cet appareil comme écran de jeu</button>
+  </div>
+  <div id="padCtl" class="hidden">
+    <div class="zone" id="zoneL"><div class="hint">Glisse pour bouger</div></div>
+    <div class="zone" id="zoneR"><div class="hint">Glisse pour viser et tirer</div></div>
+    <div class="stick" id="stickL"><i></i></div>
+    <div class="stick" id="stickR"><i></i></div>
+    <div id="padTop">
+      <div id="padHpWrap"><div id="padNameLbl"><span id="padMe">—</span><span id="padScore">0</span></div><div id="padHp"><i></i></div></div>
+      <button id="padWeapon">Pistolet<small>∞ · touche pour changer</small></button>
+    </div>
+    <div id="padMid"><div id="padCombo"></div><button class="btn hidden" id="padStart">Lancer la partie</button><div id="padMsg"></div></div>
+    <div id="padDown" class="hidden"><div><b>À terre</b><span>Un coéquipier peut te relever en restant près de toi</span></div></div>
+    <div id="padFlash"></div>
+    <button class="btn ghost" id="padLeave">Quitter</button>
+  </div>
+</div>
+<div id="bootErr" class="hidden"></div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/CopyShader.js"></script>
+<script src="vendor/LuminosityHighPassShader.js"></script>
+<script src="vendor/EffectComposer.js"></script>
+<script src="vendor/RenderPass.js"></script>
+<script src="vendor/ShaderPass.js"></script>
+<script src="vendor/UnrealBloomPass.js"></script>
+<script src="vendor/qrcode.js"></script>
+<script src="vendor/peerjs.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
